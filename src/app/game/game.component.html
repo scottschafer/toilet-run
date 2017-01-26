@@ -1,0 +1,7 @@
+<!--
+<p *ngIf="player">target = ({{player.targetX}}, {{player.targetY}}) pos = ({{player.x}}, {{player.y}})</p>
+-->
+
+<canvas class="game-view" width="1000" height="1000" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)"></canvas>
+<canvas class="offscreen-walls" width="1000" height="1000"></canvas>
+

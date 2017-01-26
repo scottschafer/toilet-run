@@ -1,0 +1,23 @@
+<h1> Toilet Run</h1>
+
+<br>
+
+<h1>Choose your character to start:</h1>
+
+<div class="characters-parent">
+  <div class="characters">
+
+    <button class="waves-effect waves-light btn"  *ngFor='let character of playerCharacters' (click)="select(character)">
+      <canvas id="{{character}}" width="200" height="200"></canvas>
+    </button>
+  </div>
+</div>
+
+<br>
+<br>
+
+<h2>Concept, Design and Project Management:</h2>
+<h3>Micah Newman Schafer</h3>
+
+<h2>Plumbing:</h2>
+<h3>Scott Schafer</h3>

@@ -1,3 +1,23 @@
-<h1>
-  {{title}}
-</h1>
+<div class="game-parent">
+
+<div [hidden]="appState.state != GAME_INTRO" class="fluid-container max-height">
+  <start-screen></start-screen>
+</div>
+
+<div [hidden]="(appState.state != GAME_IN_PROGRESS) && (appState.state != GAME_STARTING)"  class="fluid-container max-height">
+
+  <div class="row max-height">
+
+    <div class="col s8 max-height">
+      <game></game>
+    </div>
+
+    <div class="col s4 max-height">
+        <game-dashboard></game-dashboard>
+    </div>  
+  </div>
+</div>
+
+<div [hidden]="(appState.state != GAME_LOST_LIFE_POOPED_PANTS)">
+  <h1> YOU POOPED YOUR PANTS! </h1>
+</div>

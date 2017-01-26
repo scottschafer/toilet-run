@@ -1,0 +1,28 @@
+
+h1, h2, h3 {
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-size: 500%;
+}
+
+h2 {
+    margin: 4px;
+}
+
+h3 {
+    margin-top: 0px;
+}
+
+.characters-parent {
+    width: 100%;
+    text-align: center;
+
+    .btn {
+        width: 200px;
+        height: 200px;
+        margin: 10px;
+    }
+}

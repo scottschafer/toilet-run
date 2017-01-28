@@ -8,11 +8,11 @@
 
   <div class="row max-height">
 
-    <div class="col s8 max-height">
+    <div class="col s7 max-height">
       <game></game>
     </div>
 
-    <div class="col s4 max-height">
+    <div class="col s5 max-height">
         <game-dashboard></game-dashboard>
     </div>  
   </div>
@@ -21,3 +21,8 @@
 <div [hidden]="(appState.state != GAME_LOST_LIFE_POOPED_PANTS)">
   <h1> YOU POOPED YOUR PANTS! </h1>
 </div>
+
+<div [hidden]="(appState.state != GAME_LOST_LIFE_HIT_MONSTER)">
+  <h1> NEXT TIME GRAB A PLUNGER! </h1>
+</div>
+

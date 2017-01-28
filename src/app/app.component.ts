@@ -14,6 +14,8 @@ export class AppComponent implements OnInit {
   public readonly GAME_STARTING = AppState.GAME_STARTING;
   
   public readonly GAME_LOST_LIFE_POOPED_PANTS = AppState.GAME_LOST_LIFE_POOPED_PANTS;
+  public readonly GAME_LOST_LIFE_HIT_MONSTER = AppState.GAME_LOST_LIFE_HIT_MONSTER;
+  
   //public state: AppState;
 
   constructor(public appState: AppStateService) {

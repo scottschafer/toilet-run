@@ -10,7 +10,7 @@ export interface IMazeLevel {
   canMoveUp(x, y):boolean;
   canMoveDown(x, y):boolean;
 
-  getSpritesAtPosition(x, y):Array<Sprite>;
+  getSpritesAtPosition(x, y, minDist?:number):Array<Sprite>;
   removeSprite(sprite:Sprite);
   createOtherSprite(type:number, x?:number, y?:number, onTop?:boolean):OtherSprite;    
 };

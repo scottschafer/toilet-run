@@ -34,7 +34,7 @@ export class StartScreenComponent implements OnInit {
     var self = this;
     setInterval(() => {
       if (this.appState.state == AppState.GAME_INTRO) {
-        this.frame += .2;
+        this.frame += .33;
         this.updateFrames();
       }
     }, Constants.MS_PER_FRAME);

@@ -16,4 +16,10 @@
 
 .max-height {
     height: 100%;
+    overflow: hidden;
+}
+
+h1, h2, h3 {
+    width: 100%;
+    text-align: center;
 }

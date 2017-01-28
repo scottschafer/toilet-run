@@ -12,8 +12,7 @@ export enum AppState {
     GAME_LOST_LIFE_HIT_MONSTER,
     GAME_PLAYER_DYING,
     GAME_NEXT_LIFE,
-    GAME_OVER,
-    GAME_PAUSED
+    GAME_OVER
 };
 
 
@@ -38,6 +37,9 @@ export class AppStateService {
     this.appStateChange.emit(this._state);
   } 
 
+
+  public isPaused:boolean = false;
+  public justDropped:boolean = false;
 
   public character:CharacterMap;
   public levelNumber:number;

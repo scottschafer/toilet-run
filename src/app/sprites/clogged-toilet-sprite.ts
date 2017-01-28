@@ -26,21 +26,22 @@ export class CloggedToiletSprite extends OtherSprite {
     }
 
     go(x:number, y:number) {
-        this.moveX = (x - this.x) / 50;
-        this.moveY = (y - this.y) / 50;
+        this.moveX = (x - this.x) / 30;
+        this.moveY = (y - this.y) / 30;
         this.targetX = x;
         this.targetY = y;
     }
 
     onArrival(game:IMazeLevel) {
 
+
         if (this.direction == 1) {
             if (game.canMoveRight(this.x, this.y)) {
                 this.go(this.x + 1, this.y);
             }
             else {
-                this.direction = -1;
                 if (game.canMoveLeft(this.x, this.y)) {
+                    this.direction = -1;
                     this.go(this.x - 1, this.y);
                 }
             }
@@ -50,8 +51,8 @@ export class CloggedToiletSprite extends OtherSprite {
                 this.go(this.x - 1, this.y);
             }
             else {
-                this.direction = 1;
                 if (game.canMoveRight(this.x, this.y)) {
+                    this.direction = 1;
                     this.go(this.x + 1, this.y);
                 }
             }

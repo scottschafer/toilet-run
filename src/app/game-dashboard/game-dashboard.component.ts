@@ -19,7 +19,7 @@ export class GameDashboardComponent implements OnInit {
 
   ngDoCheck() {
     var elapsedBathroomBreak:number = new Date().getTime() - this.appState.lastBathroomBreak;
-    this.bathroomNeed = Math.min(1, elapsedBathroomBreak / this.BATHROOM_BREAK_MS);
+    this.bathroomNeed = Math.floor(100 * Math.min(1, elapsedBathroomBreak / this.BATHROOM_BREAK_MS)) / 100;
 
     if (this.bathroomNeed < .5) {
       this.barcolor = "rgb(0,255,0)";

@@ -106,6 +106,7 @@ export class PlayerSprite extends Sprite {
 
             if ((xd * xd + yd * yd) < .001) {
                 // we've arrived!
+                this.appState.justDropped = false;
                 this.x = this.targetX;
                 this.y = this.targetY;
                 this.frame = 0;
@@ -119,6 +120,9 @@ export class PlayerSprite extends Sprite {
         }
         // handle collision
         this.handleCollision(game.getSpritesAtPosition(this.x, this.y), game);
+        //if (this.targetX != undefined) {
+         //   this.handleCollision(game.getSpritesAtPosition(this.targetX, this.targetY), game);
+        //}
     }
 
     handleCollision(sprites:Array<Sprite>, game:IMazeLevel ) {
@@ -126,26 +130,16 @@ export class PlayerSprite extends Sprite {
             if (sprite != this) {
                 switch (sprite.type) {
                     case OtherSprite.TYPE_TP:
-                        if (! this.appState.hasTP) {
+                        if (! this.appState.hasTP && ! this.appState.hasPlunger && ! this.appState.justDropped) {
                             this.appState.hasTP = true;
                             game.removeSprite(sprite);
-
-                            if (this.appState.hasPlunger) {
-                                game.createOtherSprite(OtherSprite.TYPE_PLUNGER, this.x, this.y);
-                                this.appState.hasPlunger = false;
-                            }
                         }
                         break;
 
                         case OtherSprite.TYPE_PLUNGER: 
-                            if (! this.appState.hasPlunger) {
+                            if (! this.appState.hasTP && ! this.appState.hasPlunger && ! this.appState.justDropped) {
                                 this.appState.hasPlunger = true;
                                 game.removeSprite(sprite);
-                            }
-
-                            if (this.appState.hasTP) {
-                                game.createOtherSprite(OtherSprite.TYPE_TP, this.x, this.y);
-                                this.appState.hasTP = false;
                             }
                             break;
 
@@ -153,6 +147,9 @@ export class PlayerSprite extends Sprite {
                             if (this.appState.hasPlunger) {
                                 this.appState.hasPlunger = false;
                                 game.removeSprite(sprite);
+                            }
+                            else {
+                                this.appState.state = AppState.GAME_LOST_LIFE_HIT_MONSTER;
                             }
                             break;
 

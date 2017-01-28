@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { CharacterMap } from '../sprites/character-map';
 import { AppState, AppStateService } from '../services/app-state-service';
+import { AudioService, AudioType } from '../services/audio-service';
 import { Constants } from '../models/constants';
 
 declare var $:any;
@@ -13,15 +14,14 @@ declare var $:any;
 @Inject(AppStateService)
 export class StartScreenComponent implements OnInit {
 
-  playerCharacters:[string] = ["boy", "sara", "orc"];
+  playerCharacters:[string] = ["boy", "sara", "boy2", "orc"];
 
   private characterMaps: { [name: string]:CharacterMap } = {};
   private frame:number = 0;
   private selected: string;
-  private state:AppState;
 
-  constructor(public appState: AppStateService) {
-    //this.state = this.appState.state;
+  constructor(public appState: AppStateService,
+    public audioService: AudioService) {      
   }
 
   ngOnInit() {
@@ -42,7 +42,9 @@ export class StartScreenComponent implements OnInit {
 
 
   ngDoCheck() {
-    //this.state = this.appState.state;
+    if (this.appState.state == AppState.GAME_INTRO) {
+      this.audioService.playMusic(AudioType.MUSIC_STARTSCREEN);
+    }
   }
 
   updateFrames() {
@@ -87,7 +89,8 @@ export class StartScreenComponent implements OnInit {
     this.appState.character = this.characterMaps[character];
 
     setTimeout(()=> {
-      this.appState.state = this.state = AppState.GAME_STARTING;
+      this.appState.state = AppState.GAME_STARTING;
+      this.selected = null;
     }, 2000);
   }
 }

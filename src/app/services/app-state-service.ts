@@ -37,6 +37,18 @@ export class AppStateService {
     this.appStateChange.emit(this._state);
   } 
 
+  @Input()
+  get numLives(): AppState {
+    return this._numLives;
+  }
+
+  @Output() numLivesChange = new EventEmitter();
+
+  set numLives(val:AppState) {
+    this._numLives = val;
+    this.numLivesChange.emit(this._numLives);
+  } 
+
 
   public isPaused:boolean = false;
   public justDropped:boolean = false;
@@ -47,7 +59,7 @@ export class AppStateService {
   public hasTP:boolean = false;
   public hasPlunger:boolean = false;
 
-  public numLives: number = 3;
+  private _numLives: number = 3;
   public numTP: number = 0;
   public numPlungers: number = 0;
 

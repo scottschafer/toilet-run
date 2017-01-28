@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, ComponentRef, Input, Inject } from '@angular/core';
 import { CharacterMap } from "../sprites/character-map";
 import { AppState, AppStateService } from '../services/app-state-service';
+import { AudioService, AudioType } from '../services/audio-service';
 import { SquareMazeGrid, SquareWall } from "../../../maze-generator-ts/src/Objects/SquareMazeGrid";
 import { MazeCell, MazeGrid } from "../../../maze-generator-ts/src/Objects/MazeGrid";
 import { Constants } from '../models/constants';
@@ -53,13 +54,16 @@ export class GameComponent implements OnInit, IMazeLevel {
   event: MouseEvent;
 
   constructor(private elementRef: ElementRef,
-    public appState: AppStateService) { }
+    public appState: AppStateService,
+    public audioService: AudioService) {      
+    }
 
   getGridSize(): number {
     return this.gridSize;
   }
 
   ngOnInit() {
+
     $(window).mouseup(() => {
       this.mousedown = false;
     })
@@ -105,15 +109,24 @@ export class GameComponent implements OnInit, IMazeLevel {
 
       case AppState.GAME_LOST_LIFE_POOPED_PANTS:
       case AppState.GAME_LOST_LIFE_HIT_MONSTER:
+        this.audioService.playMusic(AudioType.MUSIC_DEATH);
+
         if (!this.appState.isPaused) {
           this.appState.isPaused = true;
           window.setTimeout(() => {
-            --this.appState.levelNumber;
+            --this.appState.numLives;
+            if (this.appState.numLives <= 0) {
+              this.appState.state = AppState.GAME_INTRO;
+            }
+            else {
+              --this.appState.levelNumber;
+              this.appState.state = AppState.GAME_NEXT_LEVEL;
+            }
             this.appState.isPaused = false;
-            this.appState.state = AppState.GAME_NEXT_LEVEL;
-          }, 2000);
+          }, 5000);
         }
         break;
+
     }
 
     //this.state = this.appState.state;
@@ -137,6 +150,7 @@ export class GameComponent implements OnInit, IMazeLevel {
 
   initGame() {
     this.appState.levelNumber = 0;
+    this.appState.numLives = 3;
     this.nextLevel();
   }
 
@@ -174,6 +188,9 @@ export class GameComponent implements OnInit, IMazeLevel {
 
     var sprite: OtherSprite;
 
+    if (type === OtherSprite.TYPE_SYMBOL) {
+      this.audioService.playSoundEffect(AudioType.SFX_FART);
+    }
     switch (type) {
       default:
         sprite = new OtherSprite();
@@ -201,6 +218,8 @@ export class GameComponent implements OnInit, IMazeLevel {
 
     if (sprite.type == OtherSprite.TYPE_CLOGGED_TOILET) {
       --this.numCloggedToilets;
+      this.audioService.playSoundEffect(AudioType.SFX_FLUSH);
+
       if (this.numCloggedToilets == 0) {
 
         // all clogged toilets are gone, so open exit
@@ -214,6 +233,8 @@ export class GameComponent implements OnInit, IMazeLevel {
   }
 
   nextLevel() {
+
+    this.audioService.playMusic(AudioType.MUSIC_LEVEL);
 
     ++this.appState.levelNumber;
     this.appState.lastBathroomBreak = new Date().getTime();

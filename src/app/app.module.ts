@@ -10,6 +10,7 @@ import { GameComponent } from './game/game.component';
 import { StartScreenComponent } from './start-screen/start-screen.component';
 import { GameDashboardComponent } from './game-dashboard/game-dashboard.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

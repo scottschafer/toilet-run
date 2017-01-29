@@ -48,7 +48,8 @@ export class PlayerSprite extends Sprite {
             var scaling:number = .35;
             var destX = this.x * 64 + xOff;
             var destY = this.y * 64 + yOff;
-            otherMap.draw(ctx, 0, this.appState.hasTP ? OtherSprite.TYPE_TP : OtherSprite.TYPE_PLUNGER,
+            
+            otherMap.draw(ctx, this.appState.hasGoldenPlunger ? 1 : 0, this.appState.hasTP ? OtherSprite.TYPE_TP : OtherSprite.TYPE_PLUNGER,
                 destX, destY, scaling, scaling);
         }
         if (! this.spriteMap) {
@@ -96,8 +97,6 @@ export class PlayerSprite extends Sprite {
                 this.frame = (this.frame + 1) % CharacterMap.NUM_WALK_FRAMES;
             }
             var maxC = game.getGridSize() - 1;
-//            this.x = Math.min(maxC, Math.max(0, this.x + this.moveX));
-//            this.y = Math.min(maxC, Math.max(0, this.y + this.moveY));
             this.x = this.x + this.moveX;
             this.y = this.y + this.moveY;
 
@@ -118,11 +117,13 @@ export class PlayerSprite extends Sprite {
                 }
             }            
         }
+
         // handle collision
+        this.pickup(game);
+    }
+
+    pickup(game:IMazeLevel) {
         this.handleCollision(game.getSpritesAtPosition(this.x, this.y), game);
-        //if (this.targetX != undefined) {
-         //   this.handleCollision(game.getSpritesAtPosition(this.targetX, this.targetY), game);
-        //}
     }
 
     handleCollision(sprites:Array<Sprite>, game:IMazeLevel ) {
@@ -139,6 +140,7 @@ export class PlayerSprite extends Sprite {
                         case OtherSprite.TYPE_PLUNGER: 
                             if (! this.appState.hasTP && ! this.appState.hasPlunger && ! this.appState.justDropped) {
                                 this.appState.hasPlunger = true;
+                                this.appState.hasGoldenPlunger = sprite.frame > 0;
                                 game.removeSprite(sprite);
                             }
                             break;
@@ -146,6 +148,12 @@ export class PlayerSprite extends Sprite {
                         case OtherSprite.TYPE_CLOGGED_TOILET:
                             if (this.appState.hasPlunger) {
                                 this.appState.hasPlunger = false;
+                                if (this.appState.hasGoldenPlunger) {
+                                    ++this.appState.numLives;
+                                }
+                                this.appState.score += 50;
+                                this.appState.hasGoldenPlunger = false;
+                                game.createOtherSprite(OtherSprite.TYPE_TOILET, sprite.x, sprite.y);
                                 game.removeSprite(sprite);
                             }
                             else {
@@ -157,12 +165,12 @@ export class PlayerSprite extends Sprite {
                             if (this.appState.hasTP) {
                                 this.appState.hasTP = false;
                                 this.appState.lastBathroomBreak = new Date().getTime();
-                                this.type = CharacterMap.WALK_DOWN;
 
                                 // go to the bathroom
                                 var goBathroomSprite:OtherSprite = game.createOtherSprite(OtherSprite.TYPE_SYMBOL, this.x, this.y, true);
                                 goBathroomSprite.frame = Math.floor(Math.random() * 4);
                                 goBathroomSprite.scaling = 1;
+                                this.appState.score += 10;
 
                                 window.setTimeout(() => {
                                     game.removeSprite(goBathroomSprite);

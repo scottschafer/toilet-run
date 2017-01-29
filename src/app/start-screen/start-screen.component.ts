@@ -14,7 +14,7 @@ declare var $:any;
 @Inject(AppStateService)
 export class StartScreenComponent implements OnInit {
 
-  playerCharacters:[string] = ["boy", "sara", "boy2", "orc"];
+  playerCharacters:[string] = ["boy", "girl2", "boy2", "sara", "orc"];
 
   private characterMaps: { [name: string]:CharacterMap } = {};
   private frame:number = 0;
@@ -63,13 +63,21 @@ export class StartScreenComponent implements OnInit {
       }
       else {
         if (this.selected == name) {
-          action = (index == 0) ? 15 : 13;
+
+          action = (Math.floor(this.frame / 10) & 1 )? 15 : 13;
+          if (index == 0) {
+            action = 15;
+          }
+          else if (index == (this.playerCharacters.length - 1)) {
+            action = 13;
+          }
+          frame = Math.min(Math.floor(this.frame) % 10, 5);
         }
         else {
           action = 20;
           yOff = 10 + this.frame * this.frame;
+          frame = Math.min(frame, 5);
         }
-        frame = Math.min(frame, 5);
       }
 
       var canvas = $('#' + name);
@@ -88,9 +96,16 @@ export class StartScreenComponent implements OnInit {
     this.selected = character;
     this.appState.character = this.characterMaps[character];
 
+    var waveTime = 1800;
+    // if a player on the edge, they will only wave once
+    var index = this.playerCharacters.indexOf(character);
+    if (index == 0 || index == (this.playerCharacters.length - 1)) {
+      waveTime = 1000;
+    }
+
     setTimeout(()=> {
       this.appState.state = AppState.GAME_STARTING;
       this.selected = null;
-    }, 2000);
+    }, waveTime);
   }
 }

@@ -240,7 +240,7 @@ export class GameComponent implements OnInit, IMazeLevel {
     this.appState.lastBathroomBreak = new Date().getTime();
     this.appState.hasPlunger = this.appState.hasTP = false;
 
-    this.gridSize = 5 + this.appState.levelNumber * 1;
+    this.gridSize = 5 + Math.floor(this.appState.levelNumber / 2);
     this.maze = SquareMazeGrid.generate(this.gridSize, this.gridSize);
     while (!this.maze.iterate()) { }
 
@@ -294,23 +294,31 @@ export class GameComponent implements OnInit, IMazeLevel {
       this.player
     ]
 
-    var numRegularToilets = 2;
+    var numRegularToilets = 1;
     var numCloggedToilets = 2;
     var numPlungers = Math.floor(2 + this.appState.levelNumber / 3);
-    var numTP = Math.floor(2 + this.appState.levelNumber / 2);
+    var numTP = Math.floor(2 + this.appState.levelNumber) - (this.appState.levelNumber % 2);
 
     this.numCloggedToilets = numCloggedToilets;
+
+    numRegularToilets = 0;
 
     while (numRegularToilets--) {
       var toilet = this.createOtherSprite(OtherSprite.TYPE_TOILET);
       toilet.offsetX = 0;
       toilet.offsetY = 10;
     }
+
     while (numCloggedToilets--) {
       var clogged: OtherSprite = this.createOtherSprite(OtherSprite.TYPE_CLOGGED_TOILET);
     }
     while (numPlungers--) {
-      this.createOtherSprite(OtherSprite.TYPE_PLUNGER);
+      var plunger:OtherSprite = this.createOtherSprite(OtherSprite.TYPE_PLUNGER);
+      // every four levels you get a golden plunger
+      var goldenPlungerLevel = (this.appState.levelNumber % 4 == 0); 
+      if (goldenPlungerLevel && ! numPlungers) {
+        plunger.frame = 1;
+      }
     }
     while (numTP--) {
       this.createOtherSprite(OtherSprite.TYPE_TP);
@@ -320,7 +328,7 @@ export class GameComponent implements OnInit, IMazeLevel {
   renderWalls() {
     var ctx: CanvasRenderingContext2D = this.wallsCanvas.getContext('2d');
 
-    var scaleWidth = 6 / this.gridSize;// = 5 + this.appState.levelNumber * 1;
+    var scaleWidth = 6 / this.gridSize;
 
 
     ctx.fillStyle = "black";
@@ -537,18 +545,21 @@ export class GameComponent implements OnInit, IMazeLevel {
   }
 
   dropItem() {
-    if (this.appState.hasTP) {
+
+    var hasTP = this.appState.hasTP; 
+    var hasPlunger = this.appState.hasPlunger;
+    this.appState.hasTP = this.appState.hasPlunger = false;
+    this.player.pickup(this);  
+
+    if (hasTP) {
       this.createOtherSprite(OtherSprite.TYPE_TP, this.player.x, this.player.y);
-      this.appState.hasTP = false;
       this.appState.justDropped = true;
     }
 
-    if (this.appState.hasPlunger) {
+    if (hasPlunger) {
       this.createOtherSprite(OtherSprite.TYPE_PLUNGER, this.player.x, this.player.y);
-      this.appState.hasPlunger = false;
       this.appState.justDropped = true;
     }
   }
-
 
 }

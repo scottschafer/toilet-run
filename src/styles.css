@@ -16,8 +16,12 @@ html, body {
 
     font-size: 50px;
 
-    overflow: hidden;
+    overflow: hidden!important;
 
 }
 
 
+body {
+overflow: hidden!important;
+  
+}

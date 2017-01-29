@@ -2,7 +2,25 @@
 <p>{{bathroomNeed}}</p>
 -->
 <div>
-<h1>Num lives: {{appState.numLives}}</h1>
+  <h1>
+    <div class="row">
+      <div class="col s6">
+        Lives:
+      </div>
+      <div class="col s6">
+        Score:
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s6">
+        <img src="assets/heart.png"  *ngFor='let life of lives'>
+      </div>
+      <div class="col s6">
+        {{appState.score}}
+      </div>
+    </div>
+ 
+   </h1>
 </div>
 
 <div class="bathroom-bar-parent">
@@ -13,8 +31,8 @@
 
 </div>
 
-<h1>
+<h2>
 <p>Use the plungers on all the clogged toilets to open the exit.</p>
 <p>Don't poop your pants!</p>
 <p>Use arrow keys to move, space bar to drop an item.</p>
-</h1>
+</h2>

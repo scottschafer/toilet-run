@@ -11,6 +11,7 @@ export class GameDashboardComponent implements OnInit {
   readonly BATHROOM_BREAK_MS: number = 30000;
   public bathroomNeed:number = 0;
   public barcolor: string;
+  public lives = [];
 
   constructor(public appState:AppStateService) { }
 
@@ -18,6 +19,10 @@ export class GameDashboardComponent implements OnInit {
   }
 
   ngDoCheck() {
+
+    if (this.lives.length != this.appState.numLives) {
+      this.lives = new Array(this.appState.numLives);
+    }
     var elapsedBathroomBreak:number = new Date().getTime() - this.appState.lastBathroomBreak;
     this.bathroomNeed = Math.floor(100 * Math.min(1, elapsedBathroomBreak / this.BATHROOM_BREAK_MS)) / 100;
 

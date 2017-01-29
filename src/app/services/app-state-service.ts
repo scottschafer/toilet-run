@@ -4,7 +4,8 @@ import { Observable } from "rxjs/Observable";
 import { CharacterMap } from '../sprites/character-map';
 
 export enum AppState {
-    GAME_INTRO = 0,
+    GAME_SPLASH_SCREEN = 0,
+    GAME_INTRO,
     GAME_STARTING,
     GAME_IN_PROGRESS,
     GAME_NEXT_LEVEL,
@@ -19,8 +20,7 @@ export enum AppState {
 @Injectable()
 export class AppStateService {
 
-  private _state:AppState = AppState.GAME_INTRO; 
-    //;
+  private _state:AppState; 
 
   constructor() {
   }
@@ -53,11 +53,15 @@ export class AppStateService {
   public isPaused:boolean = false;
   public justDropped:boolean = false;
 
+  public score:number = 0;
+  public highScore: number = 0;
+
   public character:CharacterMap;
   public levelNumber:number;
 
   public hasTP:boolean = false;
   public hasPlunger:boolean = false;
+  public hasGoldenPlunger:boolean = false;
 
   private _numLives: number = 3;
   public numTP: number = 0;

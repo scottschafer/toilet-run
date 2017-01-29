@@ -1,5 +1,13 @@
 <div class="game-parent">
 
+<div [hidden]="appState.state != GAME_SPLASH_SCREEN" class="fluid-container max-height splash-screen">
+  <div layout="row" layout-align="center" class="max-height">
+    <img src="assets/fledermoose-logo.jpg">
+  </div>
+  <h1> PRESENTS...</h1>
+</div>
+
+
 <div [hidden]="appState.state != GAME_INTRO" class="fluid-container max-height">
   <start-screen></start-screen>
 </div>
@@ -18,11 +26,11 @@
   </div>
 </div>
 
-<div [hidden]="(appState.state != GAME_LOST_LIFE_POOPED_PANTS)">
+<div class="death-screen" [hidden]="(appState.state != GAME_LOST_LIFE_POOPED_PANTS)">
   <h1> YOU POOPED YOUR PANTS! </h1>
 </div>
 
-<div [hidden]="(appState.state != GAME_LOST_LIFE_HIT_MONSTER)">
+<div class="death-screen" [hidden]="(appState.state != GAME_LOST_LIFE_HIT_MONSTER)">
   <h1> NEXT TIME GRAB A PLUNGER! </h1>
 </div>
 

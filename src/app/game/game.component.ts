@@ -297,7 +297,7 @@ export class GameComponent implements OnInit, IMazeLevel {
     var numRegularToilets = 1;
     var numCloggedToilets = 2;
     var numPlungers = Math.floor(2 + this.appState.levelNumber / 3);
-    var numTP = Math.floor(2 + this.appState.levelNumber) - (this.appState.levelNumber % 2);
+    var numTP = numPlungers;//Math.floor(2 + this.appState.levelNumber) - (this.appState.levelNumber % 2);
 
     this.numCloggedToilets = numCloggedToilets;
 

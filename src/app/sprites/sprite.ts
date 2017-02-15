@@ -20,6 +20,11 @@ export class Sprite {
         var destX = this.x * 64 + (64 - 64 * scaling) / 2 + this.offsetX;
         var destY = this.y * 64 + (64 - 64 * scaling) / 2 + this.offsetY;
         
+ ctx.shadowOffsetX = -10;
+  ctx.shadowOffsetY = 10;
+  ctx.shadowColor = 'black';
+  ctx.shadowBlur = 30;            
+
         this.spriteMap.draw(ctx, Math.floor(this.frame), this.type, destX, destY, scaling, scaling);
     }
 

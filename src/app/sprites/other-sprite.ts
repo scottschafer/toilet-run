@@ -1,7 +1,7 @@
 import { SpriteMap } from "./sprite-map";
 import { CharacterMap } from "./character-map";
 import { Sprite } from "./sprite";
-import { Constants } from '../models/constants';
+import { Constants } from '../constants';
 import { IMazeLevel } from "../IMazeLevel";
 
 export class OtherSprite extends Sprite {
@@ -11,6 +11,7 @@ export class OtherSprite extends Sprite {
     public static readonly TYPE_TP:number = 2;
     public static readonly TYPE_SYMBOL:number = 3;
     public static readonly TYPE_CLOGGED_TOILET:number = 4;
+    public static readonly TYPE_SOAP:number = 5;
     
     public static readonly WALK_UP:number = 8;
     public static readonly WALK_LEFT:number = 9;

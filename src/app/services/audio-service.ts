@@ -9,7 +9,9 @@ export enum AudioType {
   MUSIC_DEATH,
 
   SFX_FART,
-  SFX_FLUSH
+  SFX_FLUSH,
+  SFX_EXTRA_LIFE,
+  SFX_DROP  
 };
 
 @Injectable()
@@ -17,8 +19,11 @@ export class AudioService {
 
   private lastType: AudioType;
   private music: HTMLAudioElement;
+
   private fxFart: HTMLAudioElement = new Audio("assets/sounds/Girl Fart-SoundBible.com-669012925.mp3");
   private fxFlush: HTMLAudioElement = new Audio("assets/sounds/Toilet_Flushing-KevanGC-917782919.mp3");
+  private fxExtraLife: HTMLAudioElement = new Audio("assets/sounds/274183__littlerobotsoundfactory__jingle-win-synth-04.mp3");
+  private fxDrop: HTMLAudioElement = new Audio("assets/sounds/352110__inspectorj__dropping-wood-d.mp3");
 
   constructor() { }
 
@@ -74,6 +79,14 @@ export class AudioService {
 
       case AudioType.SFX_FLUSH:
         this.fxFlush.play();
+        break;
+
+      case AudioType.SFX_EXTRA_LIFE:
+        this.fxExtraLife.play();
+        break;
+
+      case AudioType.SFX_DROP:
+        this.fxDrop.play();
         break;
     }
   }

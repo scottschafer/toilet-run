@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from "rxjs/Observable";
 import { CharacterMap } from '../sprites/character-map';
+import { CookieService } from 'angular2-cookie/services/cookies.service';
 
 export enum AppState {
     GAME_SPLASH_SCREEN = 0,
@@ -11,50 +12,29 @@ export enum AppState {
     GAME_NEXT_LEVEL,
     GAME_LOST_LIFE_POOPED_PANTS,
     GAME_LOST_LIFE_HIT_MONSTER,
-    GAME_PLAYER_DYING,
-    GAME_NEXT_LIFE,
-    GAME_OVER
+    GAME_NEW_HIGHSCORE,
+    GAME_NEXT_LIFE
 };
 
 
 @Injectable()
 export class AppStateService {
 
-  private _state:AppState; 
-
-  constructor() {
+  constructor(private cookieService:CookieService) {
+    //this.state = AppState.GAME_SPLASH_SCREEN;
   }
 
-  @Input()
-  get state(): AppState {
-    return this._state;
-  }
+  public state: AppState;
+  public numLives: number;
 
-  @Output() appStateChange = new EventEmitter();
-
-  set state(val:AppState) {
-    this._state = val;
-    this.appStateChange.emit(this._state);
-  } 
-
-  @Input()
-  get numLives(): AppState {
-    return this._numLives;
-  }
-
-  @Output() numLivesChange = new EventEmitter();
-
-  set numLives(val:AppState) {
-    this._numLives = val;
-    this.numLivesChange.emit(this._numLives);
-  } 
-
+  public canvasDimension: number = 1000;
+  public canvasBorder: number = 10;
 
   public isPaused:boolean = false;
   public justDropped:boolean = false;
 
   public score:number = 0;
-  public highScore: number = 0;
+  private _highScore;
 
   public character:CharacterMap;
   public levelNumber:number;
@@ -63,9 +43,25 @@ export class AppStateService {
   public hasPlunger:boolean = false;
   public hasGoldenPlunger:boolean = false;
 
-  private _numLives: number = 3;
+  public numSoaps: number = 0;
+
   public numTP: number = 0;
   public numPlungers: number = 0;
 
-  public lastBathroomBreak: number;
+  public msUntilBathroomBreak: number;
+  public msUntilSoapDone: number;
+
+  get highScore():number {
+    if (this._highScore === undefined) {
+      this._highScore = parseInt(this.cookieService.get('highScore'));
+      this._highScore = isNaN(this._highScore) ? 0 : this._highScore;
+    }
+    return this._highScore;
+  }
+
+  set highScore(val:number) {
+    this._highScore = val;
+    this.cookieService.put('highScore',val.toString());    
+  }
+
 }

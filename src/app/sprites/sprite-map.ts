@@ -8,9 +8,6 @@ export class SpriteMap {
         private offsetY: number = 0) {
 
         this.image = new Image();
-        this.image.onload = function() {
-        }
-
         this.image.src = imagePath;
     }
 
@@ -21,8 +18,6 @@ export class SpriteMap {
         var sourceHeight =  this.elementHeight;
         var destWidth = this.elementWidth * scalingX;
         var destHeight = this.elementHeight * scalingX;
-        //var destX = canvas.width / 2 - destWidth / 2;
-        //var destY = canvas.height / 2 - destHeight / 2;
 
         ctx.drawImage(this.image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
     }

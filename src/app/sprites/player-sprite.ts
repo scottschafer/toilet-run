@@ -4,7 +4,9 @@ import { CharacterMap } from "./character-map";
 import { Sprite } from "./sprite";
 import { OtherSprite } from "./other-sprite";
 import { AppState, AppStateService } from '../services/app-state-service';
-import { Constants } from '../models/constants';
+import { AudioType, AudioService } from '../services/audio-service';
+import { EventType, GameEvent, EventPublisherService } from '../services/event-publisher-service';
+import { Constants } from '../constants';
 import { IMazeLevel } from "../IMazeLevel";
 
 @Inject(AppStateService)
@@ -15,23 +17,40 @@ export class PlayerSprite extends Sprite {
     private moveX: number;
     private moveY: number;
     private counter: number = 0;
+    private bubbleFrame: number = 0;
 
-    constructor(public appState:AppStateService) {
+    constructor(public appState:AppStateService,
+        public audioService: AudioService,
+        private eventPublisherService:EventPublisherService) {
+
         super();
     }
 
     draw(ctx: CanvasRenderingContext2D) {
         this.spriteMap = this.appState.character;
 
-        var dist = 20;
+        if (! this.spriteMap) {
+            this.spriteMap = new CharacterMap("boy");
+        }
+
+        if (this.spriteMap) {
+            super.draw(ctx);
+        }
+
+        var dist = 15;
         var xOff = 20;
-        var yOff = 20;
+        var yOff = 35;
+        var rotation = 0;
         switch (this.type) {
             case CharacterMap.WALK_LEFT:
-                xOff -= dist;
+                xOff = 30;
+                yOff = 35;
+                rotation = -Math.PI / 4;
                 break;
             case CharacterMap.WALK_RIGHT:
-                xOff += dist;
+                xOff = -5;
+                yOff = 35;
+                rotation = -Math.PI / 4;
                 break;
             case CharacterMap.WALK_UP:
                 yOff -= dist;
@@ -43,21 +62,29 @@ export class PlayerSprite extends Sprite {
                 break;
         }
 
+        var otherMap:SpriteMap = OtherSprite.getSpriteMap();
         if (this.appState.hasTP || this.appState.hasPlunger) {
-            var otherMap:SpriteMap = OtherSprite.getSpriteMap();
             var scaling:number = .35;
             var destX = this.x * 64 + xOff;
             var destY = this.y * 64 + yOff;
             
+            ctx.save();
+            ctx.translate(destX, destY);
+            destX = destY = 0;
+            ctx.rotate(rotation);
+
             otherMap.draw(ctx, this.appState.hasGoldenPlunger ? 1 : 0, this.appState.hasTP ? OtherSprite.TYPE_TP : OtherSprite.TYPE_PLUNGER,
                 destX, destY, scaling, scaling);
-        }
-        if (! this.spriteMap) {
-            this.spriteMap = new CharacterMap("boy");
+            ctx.restore();
         }
 
-        if (this.spriteMap) {
-            super.draw(ctx);
+        if (this.appState.msUntilSoapDone > 0) {
+            var scaling:number = .6;
+            var destX = this.x * 64 + ((this.type == CharacterMap.WALK_RIGHT) ? 10 : 10);
+            var destY = this.y * 64 + 30;
+            ctx.globalAlpha = Math.min(1.0, 2 * this.appState.msUntilSoapDone / Constants.MS_UNTIL_SOAP_WEARS_OFF);
+            otherMap.draw(ctx, 3 + Math.floor(this.bubbleFrame) % 3, OtherSprite.TYPE_SOAP, destX, destY, scaling);
+            ctx.globalAlpha = 1;
         }
     }
 
@@ -67,7 +94,11 @@ export class PlayerSprite extends Sprite {
         }
 
         this.moveX = this.moveY = 0;
-        var dist = 1.5 / (1000 / Constants.MS_PER_FRAME);
+        var dist = 2 / (1000 / Constants.MS_PER_FRAME);
+
+        if (this.appState.msUntilSoapDone > 0) {
+            dist *= 1.5;
+        }
 
         if (x < this.x) {
             this.type = CharacterMap.WALK_LEFT;
@@ -91,6 +122,7 @@ export class PlayerSprite extends Sprite {
 
     update(game:IMazeLevel) {
 
+        this.bubbleFrame += Constants.MS_PER_FRAME / 100;
         if (this.targetX != undefined) {
             ++this.counter;
             if (this.counter & 1) {
@@ -112,32 +144,50 @@ export class PlayerSprite extends Sprite {
                 this.targetX = this.targetY = undefined;
 
                 var maxC = game.getGridSize();
+
                 if (this.x < 0 || this.y < 0 || this.x >= maxC || this.y >= maxC) {
                     this.appState.state = AppState.GAME_NEXT_LEVEL;
+                }
+                else {
+                    if (game.canPlayerExit(this.x, this.y)) {
+                        this.go(this.x + 1, this.y);
+                    }                    
                 }
             }            
         }
 
         // handle collision
         this.pickup(game);
+        //this.handleCollision(game.getSpritesAtPosition(this.x, this.y), game);        
     }
 
     pickup(game:IMazeLevel) {
-        this.handleCollision(game.getSpritesAtPosition(this.x, this.y), game);
+        this.handleCollision(game.getSpritesAtPosition(this.x, this.y), game, true);
     }
 
-    handleCollision(sprites:Array<Sprite>, game:IMazeLevel ) {
+    handleCollision(sprites:Array<Sprite>, game:IMazeLevel, pickup? ) {
         sprites.forEach((sprite) => {
             if (sprite != this) {
                 switch (sprite.type) {
+                    case OtherSprite.TYPE_SOAP:
+                        ++this.appState.numSoaps;
+                        game.removeSprite(sprite);
+                        this.eventPublisherService.emit(EventType.EVENT_USE_SOAP);                        
+                        break;
                     case OtherSprite.TYPE_TP:
+                        if (pickup)
                         if (! this.appState.hasTP && ! this.appState.hasPlunger && ! this.appState.justDropped) {
                             this.appState.hasTP = true;
                             game.removeSprite(sprite);
                         }
                         break;
 
-                        case OtherSprite.TYPE_PLUNGER: 
+                        case OtherSprite.TYPE_PLUNGER:
+                        if (this.appState.hasTP) {
+                            this.eventPublisherService.emit(EventType.EVENT_PICKUP_DROP);
+                        }
+
+                        if (pickup)
                             if (! this.appState.hasTP && ! this.appState.hasPlunger && ! this.appState.justDropped) {
                                 this.appState.hasPlunger = true;
                                 this.appState.hasGoldenPlunger = sprite.frame > 0;
@@ -150,9 +200,11 @@ export class PlayerSprite extends Sprite {
                                 this.appState.hasPlunger = false;
                                 if (this.appState.hasGoldenPlunger) {
                                     ++this.appState.numLives;
+                                    this.audioService.playSoundEffect(AudioType.SFX_EXTRA_LIFE);
                                 }
                                 this.appState.score += 50;
                                 this.appState.hasGoldenPlunger = false;
+//                                game.createOtherSprite(OtherSprite.TYPE_TOILET, Math.round(sprite.x), Math.round(sprite.y));
                                 game.createOtherSprite(OtherSprite.TYPE_TOILET, sprite.x, sprite.y);
                                 game.removeSprite(sprite);
                             }
@@ -164,14 +216,14 @@ export class PlayerSprite extends Sprite {
                         case OtherSprite.TYPE_TOILET:
                             if (this.appState.hasTP) {
                                 this.appState.hasTP = false;
-                                this.appState.lastBathroomBreak = new Date().getTime();
+                                
+                                this.eventPublisherService.emit(EventType.EVENT_USE_TOILET);
 
                                 // go to the bathroom
                                 var goBathroomSprite:OtherSprite = game.createOtherSprite(OtherSprite.TYPE_SYMBOL, this.x, this.y, true);
                                 goBathroomSprite.frame = Math.floor(Math.random() * 4);
                                 goBathroomSprite.scaling = 1;
-                                this.appState.score += 10;
-
+  
                                 window.setTimeout(() => {
                                     game.removeSprite(goBathroomSprite);
                                 }, 1000);

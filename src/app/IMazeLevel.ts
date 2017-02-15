@@ -5,6 +5,8 @@ export interface IMazeLevel {
 
   getGridSize():number;
 
+  canPlayerExit(x, y): boolean;
+
   canMoveLeft(x, y):boolean;
   canMoveRight(x, y):boolean;
   canMoveUp(x, y):boolean;

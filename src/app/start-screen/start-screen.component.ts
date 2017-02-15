@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { CharacterMap } from '../sprites/character-map';
 import { AppState, AppStateService } from '../services/app-state-service';
 import { AudioService, AudioType } from '../services/audio-service';
-import { Constants } from '../models/constants';
+import { Constants } from '../constants';
 
 declare var $:any;
 
@@ -47,15 +47,39 @@ export class StartScreenComponent implements OnInit {
     }
   }
 
-  updateFrames() {
-    this.playerCharacters.forEach((name, index) => {
-      var action = CharacterMap.DANCE;
+  private allowFlipDirection:boolean = true;
+  private action = CharacterMap.DANCE1;
 
-      var frame = Math.floor(this.frame);
+  updateFrames() {
+
+    var frame = Math.floor(this.frame);
+    var flipDirection = false;
+    if (! this.selected) {
+      if ((frame % 12) == 1) {
+        if (this.allowFlipDirection) {
+          this.action = (this.action == CharacterMap.DANCE1) ? CharacterMap.DANCE3 : CharacterMap.DANCE1;   
+          this.allowFlipDirection = false;
+        }
+      }
+      else {
+        this.allowFlipDirection = true;
+      }
+    }
+
+    this.playerCharacters.forEach((name, index) => {
+      var action = this.action;
+
       var xOff = 10;
       var yOff = 20;
 
       if (! this.selected) {
+
+/*
+        if (flipDirection) {
+          action = CharacterMap.DANCE1 + Math.floor(Math.random() * 4);  
+        }
+        */
+
         frame = (frame /*+ index * 2*/) % 12;
         if (frame > 5) {
           frame = 11 - frame;

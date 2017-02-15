@@ -1,23 +1,35 @@
-<h1> Toilet Run</h1>
+<div class="start-screen">
+  <h1> TOILET RUN</h1>
 
-<br>
+  <h2>Choose your character to start:</h2>
 
-<h1>Choose your character to start:</h1>
+  <div class="characters-parent">
+    <div class="characters">
 
-<div class="characters-parent">
-  <div class="characters">
+      <button class="waves-effect waves-light btn"  *ngFor='let character of playerCharacters' (click)="select(character)">
+        <canvas id="{{character}}" width="200" height="200"></canvas>
+      </button>
+    </div>
+  </div>
 
-    <button class="waves-effect waves-light btn"  *ngFor='let character of playerCharacters' (click)="select(character)">
-      <canvas id="{{character}}" width="200" height="200"></canvas>
-    </button>
+  <br>
+  <br>
+
+  <div class="credits">
+  <h2>Concept, Design and Project Management:</h2>
+  <h3>Micah Newman Schafer (age 6)</h3>
+
+  <h2>Plumbing:</h2>
+  <h3>Scott Schafer (age 48)</h3>
+
+  <h2>Music:
+    <a href="http://opengameart.org/content/matts-creative-commons-music">Matthew Klingensmith</a>,
+    <a href="http://vivid.gamedevs.org/">Vivid Reality</a>
+  </h2>
+
+  <h2>Character artwork by
+    <a href="http://lpc.opengameart.org/">Liberated Pixel Cup, OpenGameArt</a>,
+    <a href="https://github.com/jrconway3/Universal-LPC-spritesheet">Universal LPC Spritesheet</a>
+    </h2>
   </div>
 </div>
-
-<br>
-<br>
-
-<h2>Concept, Design and Project Management:</h2>
-<h3>Micah Newman Schafer</h3>
-
-<h2>Plumbing:</h2>
-<h3>Scott Schafer</h3>

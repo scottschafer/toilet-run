@@ -1,0 +1,33 @@
+<button class="waves-effect waves-light btn close" (click)="onClose()">X</button>
+
+<h1>NEW HIGH SCORE! </h1>
+<!-- 
+  <ng-md-icon icon="facebook" size="48"></ng-md-icon> -->
+
+  <h2>Why not brag about it? Copy and paste to your favorite social network!</h2>
+
+  <h2 class="input-group-btn">
+    {{bragMessage}}<br>
+
+    <button class="btn btn-default" [class.btn-success]= "isCopied" type="button"
+      ngxClipboard [cbContent]="bragMessage" (cbOnSuccess)="isCopied = true">copy</button>
+  </h2>
+
+  <h2 [hidden]="!isCopied">Copied! To post to Facebook, click the icon and paste into your status. Thanks for playing!<br>
+    <a href="//facebook.com">
+      <img style="height:50px" src="assets/FB-fLogo-Blue-broadcast.png">
+    </a>
+  </h2>
+  <!-- 
+
+
+    <div class="input-group">
+      <input type="text" class="form-control" [(ngModel)]="text" placeholder="content will be copy after click the copy button">
+      <span class="input-group-btn">
+        <button class="btn btn-default" [class.btn-success]= "isCopied1" type="button"
+          ngxClipboard [cbContent]="text" (cbOnSuccess)="isCopied1 = true">copy</button>
+      </span>
+    </div>
+
+-->
+

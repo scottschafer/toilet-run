@@ -1,36 +1,46 @@
 <div class="game-parent">
 
-<div [hidden]="appState.state != GAME_SPLASH_SCREEN" class="fluid-container max-height splash-screen">
-  <div layout="row" layout-align="center" class="max-height">
-    <img src="assets/fledermoose-logo.jpg">
-  </div>
-  <h1> PRESENTS...</h1>
-</div>
-
-
-<div [hidden]="appState.state != GAME_INTRO" class="fluid-container max-height">
-  <start-screen></start-screen>
-</div>
-
-<div [hidden]="(appState.state != GAME_IN_PROGRESS) && (appState.state != GAME_STARTING)"  class="fluid-container max-height">
-
-  <div class="row max-height">
-
-    <div class="col s7 max-height">
-      <game></game>
+  <div [hidden]="appState.state != GAME_SPLASH_SCREEN" class="fluid-container max-height splash-screen">
+    <div layout="row" layout-align="center" class="max-height">
+      <img src="assets/fledermoose-logo.jpg">
     </div>
-
-    <div class="col s5 max-height">
-        <game-dashboard></game-dashboard>
-    </div>  
+    <h1> PRESENTS...</h1>
   </div>
-</div>
 
-<div class="death-screen" [hidden]="(appState.state != GAME_LOST_LIFE_POOPED_PANTS)">
-  <h1> YOU POOPED YOUR PANTS! </h1>
-</div>
 
-<div class="death-screen" [hidden]="(appState.state != GAME_LOST_LIFE_HIT_MONSTER)">
-  <h1> NEXT TIME GRAB A PLUNGER! </h1>
-</div>
+  <div [hidden]="appState.state != GAME_INTRO" class="fluid-container max-height">
+    <start-screen></start-screen>
+  </div>
 
+  <div class="fluid-container max-height" [hidden]="(appState.state != GAME_IN_PROGRESS) &&
+(appState.state != GAME_STARTING) &&
+(appState.state != GAME_LOST_LIFE_POOPED_PANTS) &&
+(appState.state != GAME_LOST_LIFE_HIT_MONSTER)">
+
+    <div class="row max-height">
+
+      <div class="col s7 max-height">
+        <game></game>
+      </div>
+
+      <div class="col s5 max-height">
+        <game-dashboard></game-dashboard>
+      </div>
+    </div>
+  </div>
+
+  <div class="death-screen" [hidden]="(appState.state != GAME_LOST_LIFE_POOPED_PANTS)" [appScaleToWidth]="800">
+    <div>
+      <h1> YOU POOPED YOUR PANTS! </h1>
+    </div>
+  </div>
+
+  <div class="death-screen" [hidden]="(appState.state != GAME_LOST_LIFE_HIT_MONSTER)" [appScaleToWidth]="800">
+    <div>
+      <h1> NEXT TIME GRAB A PLUNGER! </h1>
+    </div>
+  </div>
+
+<div class="death-screen" [hidden]="(appState.state != GAME_NEW_HIGHSCORE)" [appScaleToWidth]="800">
+  <high-score></high-score>
+</div>

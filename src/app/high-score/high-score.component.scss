@@ -1,0 +1,38 @@
+
+h1, h2, h3 {
+    width: 100%;
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+h1 {
+    font-size: 500%;
+}
+
+h2 {
+    margin: 4px;
+}
+
+h3 {
+    margin-top: 0px;
+}
+
+.input-group-btn {
+    margin-top: 10px;
+    border: white solid 1px;
+    background-color: lightgray;
+    color: black;
+}
+
+.close {
+    position: absolute;
+    padding: 0;
+    right: 10px;
+    top: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%!important;
+    font-size:40px;
+    text-align: center;
+}

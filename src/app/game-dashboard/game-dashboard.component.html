@@ -1,35 +1,49 @@
 <!--
 <p>{{bathroomNeed}}</p>
 -->
-<div>
-  <h1>
+<div class="dashboard-parent" [appScaleToWidth]="800">
+  <div class="row">
     <div class="row">
-      <div class="col s6">
+      <button  class="col s6 waves-effect waves-light btn"
+        (click)="togglePause()">{{appState.isPaused ? 'Continue' : 'Pause'}}</button>
+      <button class="col s6 waves-effect waves-light btn"
+        [disabled]="! (appState.hasTP || appState.hasPlunger || appState.hasGoldenPlunger)"
+        (click)="onDrop()">Drop</button>
+    </div>
+    <div class="row">
+      <div class="col s8">
         Lives:
       </div>
-      <div class="col s6">
+      <div class="col s4">
         Score:
       </div>
     </div>
     <div class="row">
-      <div class="col s6">
-        <img src="assets/heart.png"  *ngFor='let life of lives'>
+      <div class="col s8">
+        <img src="assets/heart.png" class="heart-icon" *ngFor='let life of lives'>
       </div>
-      <div class="col s6">
+      <div class="col s4">
         {{appState.score}}
       </div>
     </div>
- 
-   </h1>
+  </div>
 </div>
 
 <div class="bathroom-bar-parent">
   <div class="bathroom-bar"
     [style.width]="(100 - 100*bathroomNeed) + '%'"
-    [style.backgroundColor]="barcolor"
-    ></div>
-
+    [style.backgroundColor]="barcolor">
+  </div>
 </div>
+
+<!--
+<div class="soap-bar-parent">
+  <div class="soap-bar"
+    [style.width]="soapTime*100 + '%'"
+    [style.backgroundColor]="barcolor">
+  </div>
+</div>
+-->
 
 <h2>
 <p>Use the plungers on all the clogged toilets to open the exit.</p>

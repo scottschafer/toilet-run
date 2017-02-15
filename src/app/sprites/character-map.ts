@@ -8,7 +8,10 @@ export class CharacterMap extends SpriteMap{
     public static readonly OFFSET_Y:number = 0;
 
 
-    public static readonly DANCE:number = 14;
+    public static readonly DANCE1:number = 12;
+    public static readonly DANCE2:number = 13;
+    public static readonly DANCE3:number = 14;
+    public static readonly DANCE4:number = 15;
     public static readonly WALK_UP:number = 8;
     public static readonly WALK_LEFT:number = 9;
     public static readonly WALK_DOWN:number = 10;
